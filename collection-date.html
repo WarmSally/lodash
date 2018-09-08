@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.countBy(collection, [iteratee=_.identity]) 清点后归类*/
+    console.log(_.countBy([6.1, 4.2, 6.3], Math.floor));
+    console.log(_.countBy(['one', 'two', 'three'], 'length'));
+
+    /*_.forEach(collection, [iteratee=_.identity]) 遍历返回集合所有元素*/
+    console.log(_.forEach([1, 2], function(value) {console.log(value);}));
+    console.log(_.forEach({ 'a': 1, 'b': 2 }, function(value, key) {console.log(key);}));
+
+    /*_.forEachRight(collection, [iteratee=_.identity])*/
+    console.log(_.forEachRight([1, 2], function(value) {console.log(value);
+    }));
+
+    /*_.every(collection, [predicate=_.identity]) 检查谓词是否符合集合的所有元素，符合返回true,不符合返回false*/
+    console.log(_.every([true, 1, null, 'yes'], Boolean));
+    var users = [
+        { 'user': 'barney', 'age': 36, 'active': false },
+        { 'user': 'fred',   'age': 40, 'active': false }
+    ];
+    console.log(_.every(users, { 'user': 'barney', 'active': false }));
+    console.log(_.every(users, ['active', false]));
+    console.log(_.every(users, 'active'));
+
+    /*_.filter(collection, [predicate=_.identity]) 遍历元素，返回所有符合的值*/
+    var users = [
+        { 'user': 'barney', 'age': 36, 'active': true },
+        { 'user': 'fred',   'age': 40, 'active': false }
+    ];
+    console.log(_.filter(users, function(o) { return !o.active; }));
+    console.log(_.filter(users, { 'age': 36, 'active': true }));
+    console.log(_.filter(users, ['active', false]));
+    console.log(_.filter(users, 'active'));
+
+    /*_.find(collection, [predicate=_.identity], [fromIndex=0])遍历所有元素，返回第一个符合的值*/
+    var users = [
+        { 'user': 'barney',  'age': 36, 'active': true },
+        { 'user': 'fred',    'age': 40, 'active': false },
+        { 'user': 'pebbles', 'age': 1,  'active': true }
+    ];
+    console.log(_.find(users, function(o) { return o.age < 40; }));
+    console.log(_.find(users, { 'age': 1, 'active': true }));
+    console.log(_.find(users, ['active', false]));
+    console.log(_.find(users, 'active'));
+
+    /*_.findLast(collection, [predicate=_.identity], [fromIndex=collection.length-1]) 从后往前遍历所有元素，返回第一个符合的值*/
+    console.log(_.findLast([1, 2, 3, 4], function(n) {return n % 2 == 1;
+    }));
+
+    /*_.flatMap(collection, [iteratee=_.identity])*/
+    function duplicate(n) {
+        return [n, n];
+    }
+    console.log(_.flatMap([1, 2], duplicate));
+
+    /*_.flatMapDeep(collection, [iteratee=_.identity])*/
+    function duplicate(n) {
+        return [[[n, n]]];
+    }
+    console.log(_.flatMapDeep([1, 2], duplicate));
+
+    /*_.flatMapDepth(collection, [iteratee=_.identity], [depth=1])*/
+    function duplicate(n) {
+        return [[[n, n]]];
+    }
+    console.log(_.flatMapDepth([1, 2], duplicate, 2));
+
+    /*_.groupBy(collection, [iteratee=_.identity])*/
+    console.log(_.groupBy([6.1, 4.2, 6.3], Math.floor));
+    console.log(_.groupBy(['one', 'two', 'three'], 'length'));
+
+    /*_.includes(collection, value, [fromIndex=0])*/
+    console.log(_.includes([1, 2, 3], 1));
+    console.log(_.includes([1, 2, 3], 1, 2));
+    console.log(_.includes({ 'a': 1, 'b': 2 }, 1));
+    console.log(_.includes('abcd', 'bc'));
+
+    /*_.invokeMap(collection, path, [args])*/
+    console.log(_.invokeMap([[5, 1, 7], [3, 2, 1]], 'sort'));
+    console.log(_.invokeMap([123, 456], String.prototype.split, ''));
+
+    /*_.keyBy(collection, [iteratee=_.identity]) 将返回的值作为键值*/
+    var array = [
+        { 'dir': 'left', 'code': 97 },
+        { 'dir': 'right', 'code': 100 }
+    ];
+    console.log(_.keyBy(array, function(o) {
+        return String.fromCharCode(o.code);
+    }));
+    console.log(_.keyBy(array, 'dir'));
+
+    /*_.map(collection, [iteratee=_.identity])*/
+    function square(n) {
+        return n * n;
+    }
+    console.log(_.map([4, 8], square));
+    console.log(_.map({ 'a': 4, 'b': 8 }, square));
+    var users = [
+        { 'user': 'barney' },
+        { 'user': 'fred' }
+    ];
+    console.log(_.map(users, 'user'));
+
+    /*_.orderBy(collection, [iteratees=[_.identity]], [orders])默认升序*/
+    var users = [
+        { 'user': 'fred',   'age': 48 },
+        { 'user': 'barney', 'age': 34 },
+        { 'user': 'fred',   'age': 40 },
+        { 'user': 'barney', 'age': 36 }
+    ];
+    console.log(_.orderBy(users, ['user', 'age'], ['asc', 'desc']));
+
+    /*_.partition(collection, [predicate=_.identity])将结果分为两个数组，第一个返回true，第二个返回false*/
+    var users = [
+        { 'user': 'barney',  'age': 36, 'active': false },
+        { 'user': 'fred',    'age': 40, 'active': true },
+        { 'user': 'pebbles', 'age': 1,  'active': false }
+    ];
+    console.log(_.partition(users, function(o) { return o.active; }));
+    console.log(_.partition(users, { 'age': 1, 'active': false }));
+    console.log(_.partition(users, ['active', false]));
+    console.log(_.partition(users, 'active'));
+
+    /*_.reduce(collection, [iteratee=_.identity], [accumulator]) 通过加法器将集合简化为一个值*/
+    console.log(_.reduce([1, 2], function(sum, n) {
+        return sum + n;
+    }, 0));
+    console.log(_.reduce({ 'a': 1, 'b': 2, 'c': 1 }, function(result, value, key) {
+        (result[value] || (result[value] = [])).push(key);
+        return result;
+    }, {}));
+
+    /*_.reduceRight(collection, [iteratee=_.identity], [accumulator]) 从右往左*/
+    var array = [[0, 1], [2, 3], [4, 5]];
+    console.log(_.reduceRight(array, function(flattened, other) {
+        return flattened.concat(other);
+    }, []));
+
+    /*_.reject(collection, [predicate=_.identity]) 返回false的集合元素*/
+    var users = [
+        { 'user': 'barney', 'age': 36, 'active': false },
+        { 'user': 'fred',   'age': 40, 'active': true }
+    ];
+    console.log(_.reject(users, function(o) { return !o.active; }));
+    console.log(_.reject(users, { 'age': 40, 'active': true }));
+    console.log(_.reject(users, ['active', false]));
+    console.log(_.reject(users, 'active'));
+
+    /*_.sample(collection) 从集合中获取随机元素*/
+    console.log(_.sample([1, 2, 3, 4]));
+
+    /*_.sampleSize(collection, [n=1])获取特定长度的随机元素*/
+    console.log(_.sampleSize([1, 2, 3], 2));
+    console.log(_.sampleSize([1, 2, 3], 4));
+
+    /*_.shuffle(collection) 洗牌*/
+    console.log(_.shuffle([1, 2, 3, 4]));
+
+    /*_.size(collection) 获取集合大小*/
+    console.log(_.size([1, 2, 3]));
+
+    /*_.some(collection, [predicate=_.identity]) 检查谓词是否为集合中的值*/
+    console.log(_.some([null, 0, 'yes', false], Boolean));
+    var users = [
+        { 'user': 'barney', 'active': true },
+        { 'user': 'fred',   'active': false }
+    ];
+    console.log(_.some(users, { 'user': 'barney', 'active': false }));
+
+    /*_.sortBy(collection, [iteratees=[_.identity]])升序排序,保持相等元素的原始排序顺序*/
+    var users = [
+        { 'user': 'fred',   'age': 48 },
+        { 'user': 'barney', 'age': 36 },
+        { 'user': 'fred',   'age': 40 },
+        { 'user': 'barney', 'age': 34 }
+    ];
+    console.log(_.sortBy(users, [function(o) { return o.user; }]));
+    console.log(_.sortBy(users, ['user', 'age']));
+
+
+    /*_.now()*/
+    console.log(_.defer(function(stamp) {_.now() - stamp;}, _.now()));
+    /*记录延迟调用的毫秒数*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+

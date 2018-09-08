@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+</body>
+</html>
+<!--CDN-->
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.chunk(array, [size=1]) 分割数组*/
+    console.log(_.chunk([1,2,3,4,5],2));
+
+    /*_.compact(array) 删除数组中错误的值：0 “” false*/
+    console.log(_.compact([0, 1, false, 2, '', 3]));
+
+    /*_.concat(array, [values]) 串联数组或值*/
+    console.log( _.concat([1], 2, [3], [[4]]));
+
+    /*_.difference(array, [values]) 去除value中的值后array中的值*/
+    console.log(_.difference([2, 1], [2, 3]));
+
+    /*_.differenceBy(array, [values], [iteratee=_.identity]) 元素会调用迭代*/
+    console.log(_.differenceBy([2.1, 1.2], [1.3, 3.4], Math.floor));
+    console.log(_.differenceBy([{ 'x': 2 }, { 'x': 1 }], [{ 'x': 2}], 'x'));
+
+    /*_.differenceWith(array, [values], [comparator]) 比较器调用每个元素*/
+    var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+    console.log(_.differenceWith(objects, [{ 'x': 1, 'y': 2 }], _.isEqual));
+
+    /*_.drop(array, [n=1]) 从开始处删除n个数组元素，返回删除过后的数组 */
+    console.log(_.drop([1, 2, 3]));
+    console.log(_.drop([1, 2, 3], 2));
+    console.log(_.drop([1, 2, 3], 5));
+    console.log(_.drop([1, 2, 3], 0));
+
+    /*_.dropRight(array, [n=1]) 从末尾删除n个元素 */
+    console.log(_.dropRight([1, 2, 3]));
+    console.log(_.dropRight([1, 2, 3], 2));
+    console.log(_.dropRight([1, 2, 3], 5));
+    console.log(_.dropRight([1, 2, 3], 0));
+
+    /*_.dropRightWhile(array, [predicate=_.identity]) 调用迭代 从数组末尾删除元素直到遇到错误的值*/
+    var users1 = [
+        { 'user': 'fred',    'active': false },
+        { 'user': 'barney',  'active': true },
+        { 'user': 'pebbles', 'active': false }
+    ];
+    console.log(_.dropRightWhile(users1, function(o) { return !o.active; }));
+    console.log(_.dropRightWhile(users1, { 'user': 'pebbles', 'active': false }));
+    console.log(_.dropRightWhile(users1, ['active', false]));
+    console.log(_.dropRightWhile(users1, 'active'));
+
+    /*_.dropWhile(array, [predicate=_.identity]) 从数组头部开始删除元素，直到碰到错误的值*/
+    var users2 = [
+        { 'user': 'fred',    'active': false },
+        { 'user': 'barney',  'active': true },
+        { 'user': 'pebbles', 'active': false }
+    ];
+    console.log(_.dropWhile(users2, function(o) { return !o.active; }));
+    console.log(_.dropWhile(users2, { 'user': 'pebbles', 'active': false }));
+    console.log(_.dropWhile(users2, ['active', false]));
+    console.log(_.dropWhile(users2, 'active'));
+
+    /*_.fill(array, value, [start=0], [end=array.length]) 从开始到结束用值填充数组，但不包括结束*/
+    var array = [1, 2, 3];
+    console.log(_.fill(array, 'a'));
+    console.log(_.fill(Array(3), 2));
+    console.log(_.fill([4, 6, 8, 10], '*', 1, 3));
+
+    /*_.findIndex(array, [predicate=_.identity], [fromIndex=0]) 从数组头部开始 返回第一个匹配元素的索引*/
+    var users3 = [
+        { 'user': 'barney',  'active': false },
+        { 'user': 'fred',    'active': false },
+        { 'user': 'pebbles', 'active': true }
+    ];
+    console.log(_.findIndex(users3, function(o) { return o.user == 'barney'; }));
+    console.log(_.findIndex(users3, { 'user': 'fred', 'active': false }));
+    console.log(_.findIndex(users3, ['active', false]));
+    console.log(_.findIndex(users3, 'active'));
+
+    /*_.findLastIndex(array, [predicate=_.identity], [fromIndex=array.length-1])*/
+    /*从数组尾部开始，返回第一个匹配的元素*/
+    var users4 = [
+        { 'user': 'barney',  'active': true },
+        { 'user': 'fred',    'active': false },
+        { 'user': 'pebbles', 'active': false }
+    ];
+    console.log(_.findLastIndex(users4, function(o) { return o.user == 'fred'; }));
+    console.log(_.findLastIndex(users4, { 'user': 'barney', 'active': true }));
+    console.log(_.findLastIndex(users4, { 'user': 'barney', 'active': true }));
+    console.log(_.findLastIndex(users4, 'active'));
+
+    /*_.flatten(array) 扁平数组*/
+    console.log(_.flatten([1, [2, [3, [4]], 5]]));
+
+    /*_.flattenDeep(array) 完全将数组扁平化*/
+    console.log(_.flattenDeep([[1, [2, [3, [4]], 5]]]));
+
+    /*_.flattenDepth(array, [depth=1]) 根据深度将数组扁平*/
+    var array = [1, [2, [3, [4]], 5]];
+    console.log(_.flattenDepth(array, 1));
+    console.log(_.flattenDepth(array, 2));
+
+    /*_.fromPairs(pairs)返回由键值对组成的对象 */
+    console.log(_.fromPairs([['a', 1], ['b', 2]]));
+
+    /*_.head(array) 获取数组的第一个元素*/
+    console.log(_.head([1, 2, 3]));
+
+    /*_.indexOf(array, value, [fromIndex=0])array中第一个与value相同的值的索引*/
+    console.log(_.indexOf([1, 2, 1, 2], 2));
+    console.log(_.indexOf([1, 2, 1, 2], 2, 2));
+
+    /*_.initial(array) 获取数组除了最后一个元素的其他元素*/
+    console.log(_.initial([1, 2, 3]));
+
+    /*_.intersection([arrays]) 比较两个数组，返回相同的值（以第一个数组为准）*/
+    console.log(_.intersection([2, 1], [2, 3]));
+
+    /*_.intersectionBy([arrays], [iteratee=_.identity]) 调用迭代函数，比较两个数组，返回相同的值（以第一个数组为准）*/
+    console.log(_.intersectionBy([2.1, 1.2], [2.3, 3.4], Math.floor));
+    console.log(_.intersectionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'));
+
+    /*_.intersectionWith([arrays], [comparator]) 调用比较器*/
+    var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+    var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }];
+    console.log(_.intersectionWith(objects, others, _.isEqual));
+
+    /*_.join(array, [separator=',']) 加入分隔符*/
+    console.log(_.join(['a', 'b', 'c'], '~'));
+
+    /*_.last(array) 获得数组最后一个元素*/
+    console.log(_.last([1, 2, 3]));
+
+    /*_.lastIndexOf(array, value, [fromIndex=array.length-1])从数组末尾查找索引*/
+    console.log(_.lastIndexOf([1, 2, 1, 2], 2));
+    console.log(_.lastIndexOf([1, 2, 1, 2], 2, 2));
+
+    /*_.nth(array, [n=0]) 返回数组中相应索引的值，若是负数，则返回末尾的第n个值*/
+    var array = ['a', 'b', 'c', 'd'];
+    console.log(_.nth(array, 1));
+    console.log(_.nth(array, -2));
+
+    /*_.pull(array, [values]) 从数组中删除给定的值*/
+    var array = ['a', 'b', 'c', 'a', 'b', 'c'];
+    console.log(_.pull(array, 'a', 'c'));
+
+    /*_.pullAll(array, values) values是删除的值的数组*/
+    var array = ['a', 'b', 'c', 'a', 'b', 'c'];
+    console.log(_.pullAll(array, ['a', 'c']));
+
+    /*_.pullAllBy(array, values, [iteratee=_.identity]) 调用迭代函数*/
+    var array = [{ 'x': 1 }, { 'x': 2 }, { 'x': 3 }, { 'x': 1 }];
+    console.log(_.pullAllBy(array, [{ 'x': 1 }, { 'x': 3 }], 'x'));
+
+    /*_.pullAllWith(array, values, [comparator]) 调用比较器*/
+    var array = [{ 'x': 1, 'y': 2 }, { 'x': 3, 'y': 4 }, { 'x': 5, 'y': 6 }];
+    console.log(_.pullAllWith(array, [{ 'x': 3, 'y': 4 }], _.isEqual));
+
+    /*_.pullAt(array, [indexes]) 根据索引号删除元素,返回被删除元素组成的数组*/
+    var array = ['a', 'b', 'c', 'd'];
+    console.log(_.pullAt(array, [1, 3]));
+    console.log(array);
+
+    /*_.remove(array, [predicate=_.identity])*/
+    var array = [1, 2, 3, 4];
+    var evens = _.remove(array, function(n) {
+        return n % 2 == 0;
+    });
+    console.log(array);
+    console.log(evens);
+
+    /*_.reverse(array) 反转数组*/
+    var array = [1, 2, 3];
+    console.log(_.reverse(array));
+    console.log(array);
+
+    /*_.slice(array, [start=0], [end=array.length])从头截取数组，但不包括end*/
+    console.log(_.slice([1,2,3,4],0,3));
+
+    /*_.sortedIndex(array, value) 返回value应该插入的位置的索引*/
+    console.log(_.sortedIndex([30, 50], 40));
+
+    /*_.sortedIndexBy(array, value, [iteratee=_.identity])*/
+    var objects = [{ 'x': 4 }, { 'x': 5 }];
+    console.log(_.sortedIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }));
+    console.log(_.sortedIndexBy(objects, { 'x': 4 }, 'x'));
+
+    /*_.sortedIndexOf(array, value) 返回排序数组中匹配值的索引*/
+    console.log(_.sortedIndexOf([4, 5, 5, 5, 6], 5));
+
+    /*_.sortedLastIndex(array, value) 返回value可插入位置的最高索引*/
+    console.log(_.sortedLastIndex([4, 5, 5, 5, 6], 5));
+
+    /*_.sortedLastIndexBy(array, value, [iteratee=_.identity]) 返回value可插入位置的最高索引*/
+    var objects = [{ 'x': 4 }, { 'x': 5 }];
+    console.log(_.sortedLastIndexBy(objects, { 'x': 4 }, function(o) { return o.x; }))
+    console.log(_.sortedLastIndexBy(objects, { 'x': 4 }, 'x'));
+
+    /*_.sortedLastIndexOf(array, value) 返回排序数组中匹配值的最高索引*/
+    console.log(_.sortedLastIndexOf([4, 5, 5, 5, 6], 5));
+
+    /*_.sortedUniq(array) 对于排序数组返回新的重复自由数组*/
+    console.log(_.sortedUniq([1, 1, 2, 3]));
+
+    /*_.sortedUniqBy(array, [iteratee])*/
+    console.log(_.sortedUniqBy([1.1, 1.2, 2.3, 2.4], Math.floor));
+
+    /*_.tail(array) 获取数组中除第一个元素外的所有元素*/
+    console.log(_.tail([1, 2, 3]));
+
+    /*_.take(array, [n=1]) 从数组开始截取n个数值*/
+    console.log(_.take([1, 2, 3]));
+    console.log(_.take([1, 2, 3], 2));
+
+    /*_.takeRight(array, [n=1]) 从数组末尾截取n个数值*/
+    console.log(_.takeRight([1, 2, 3], 2));
+
+    /*_.takeRightWhile(array, [predicate=_.identity]) 遇到不符合的值就结束截取*/
+    var users = [
+        { 'user': 'barney',  'active': true },
+        { 'user': 'fred',    'active': false },
+        { 'user': 'pebbles', 'active': false }
+    ];
+    console.log(_.takeRightWhile(users, function(o) { return !o.active; }));
+    console.log(_.takeRightWhile(users, { 'user': 'pebbles', 'active': false }));
+    console.log(_.takeRightWhile(users, ['active', false]));
+    console.log(_.takeRightWhile(users, 'active'));
+
+    /*_.takeWhile(array, [predicate=_.identity]) */
+    var users = [
+        { 'user': 'barney',  'active': true },
+        { 'user': 'fred',    'active': false },
+        { 'user': 'pebbles', 'active': false }
+    ];
+    console.log(_.takeWhile(users, function(o) { return !o.active; }));
+    console.log(_.takeWhile(users, { 'user': 'pebbles', 'active': false }));
+    console.log(_.takeWhile(users, ['active', false]));
+    console.log(_.takeWhile(users, 'active'));
+
+    /*_.union([arrays])返回取并集的值*/
+    console.log(_.union([2], [1, 2]));
+
+    /*_.unionBy([arrays], [iteratee=_.identity]) */
+    console.log(_.unionBy([2.1], [1.2, 2.3], Math.floor));
+    console.log(_.unionBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'));
+
+    /*_.unionWith([arrays], [comparator])*/
+    var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+    var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }];
+    console.log(_.unionWith(objects, others, _.isEqual));
+
+    /*_.uniq(array) 返回新的重复自由数组*/
+    console.log(_.uniq([2, 1, 2]));
+
+    /*_.uniqBy(array, [iteratee=_.identity])*/
+
+    /*_.uniqWith(array, [comparator])*/
+
+    /*_.unzip(array) 返回重新组合的新元素数组*/
+    var zipped = _.zip(['a', 'b'], [1, 2], [true, false]);
+    console.log(_.unzip(zipped));
+
+    /*_.unzipWith(array, [iteratee=_.identity])*/
+    var zipped = _.zip([1, 2], [10, 20], [100, 200]);
+    console.log(_.unzipWith(zipped, _.add));
+
+    /*_.without(array, [values]) 返回筛选过的新数组 */
+    console.log(_.without([2, 1, 2, 3], 1, 2));
+
+    /*_.xor([arrays]) 返回筛选过的新数组,去除一样的数值*/
+    console.log(_.xor([2, 1], [2, 3]));
+
+    /*_.xorBy([arrays], [iteratee=_.identity])*/
+    console.log(_.xorBy([2.1, 1.2], [2.3, 3.4], Math.floor));
+    console.log(_.xorBy([{ 'x': 1 }], [{ 'x': 2 }, { 'x': 1 }], 'x'));
+
+    /*_.xorWith([arrays], [comparator])*/
+    var objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+    var others = [{ 'x': 1, 'y': 1 }, { 'x': 1, 'y': 2 }];
+    console.log(_.xorWith(objects, others, _.isEqual));
+
+    /*_.zip([arrays])*/
+    console.log(_.zip(['a', 'b'], [1, 2], [true, false]));
+
+    /*_.zipObject([props=[]], [values=[]])*/
+    console.log(_.zipObject(['a', 'b'], [1, 2]));
+
+    /*_.zipObjectDeep([props=[]], [values=[]])*/
+    console.log(_.zipObjectDeep(['a.b[0].c', 'a.b[1].d'], [1, 2]));
+
+    /*_.zipWith([arrays], [iteratee=_.identity])*/
+    console.log(_.zipWith([1, 2], [10, 20], [100, 200], function(a, b, c) {
+        return a + b + c;
+    }));
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
