@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.after(n, func) 创建一个函数，当他被调用n或更多次之后将马上触发func */
+    var saves = ['profile', 'settings'];
+    _.after(saves.length, function() {
+        console.log('done saving!');
+    });
+
+    /*_.ary(func, [n=func.length]) 创建一个调用func的函数。调用func时最多接受 n个参数，忽略多出的参数*/
+    console.log(_.map(['6', '8', '10'], _.ary(parseInt, 1)));
+
+    /*_.before(n, func)创建一个调用func的函数，调用次数n-1次。 之后再调用这个函数，将返回一次最后调用func的结果。*/
+    /*jQuery(element).on('click', _.before(5, addContactToList));*/
+    // => 允许添加4次
+
+    /*_.bind(func, thisArg, [partials])创建一个调用func的函数，thisArg绑定func函数中的 this，并且func函数会接收partials附加参数。 */
+    var greet = function(greeting, punctuation) {
+        var a= greeting + ' ' + this.user + punctuation;
+        console.log(a);
+    };
+    var object = { 'user': 'fred' };
+    var bound = _.bind(greet, object, 'hi');/*定义*/
+    bound('!');/*调用*/
+
+    var bound = _.bind(greet, object,_,'!');/*_.bind.placeholder值，默认是以 _ 作为附加部分参数的占位符。*/
+    bound('hi');
+
+    var bound = _.bind(greet, object,'hello','!');
+    bound();
+
+    /*_.bindKey(object, key, [partials]) 创建一个函数,在object[key]上通过接收partials附加参数，调用这个方法。*/
+    var object = {
+        'user': 'fred',
+        'greet': function(greeting, punctuation) {
+            var b= greeting + ' ' + this.user + punctuation;
+            console.log(b);
+        }
+    };
+    var bound = _.bindKey(object, 'greet', 'hi');
+    bound('!');
+
+    object.greet = function(greeting, punctuation) {
+        var c= greeting + 'ya ' + this.user + punctuation;
+        console.log(c);
+    };
+    bound('!');
+
+    var bound = _.bindKey(object, 'greet', _, '!');
+    bound('hi');
+
+    /*_.curry(func, [arity=func.length])*/
+    var abc = function(a, b, c) {
+       var result= [a, b, c];
+        console.log(result);
+    };
+
+    var curried = _.curry(abc);
+    curried(1)(2)(3);
+    curried(1, 2)(3);
+    curried(1, 2, 3);
+    curried(1)(_, 3)(2);
+
+    /*_.curryRight(func, [arity=func.length])*/
+    var abc = function(a, b, c) {
+        var result= [a, b, c];
+        console.log(result);
+    };
+    var curried = _.curryRight(abc);
+    curried(3)(2)(1);
+    curried(1)(2)(3);
+    curried(2, 3)(1);
+    curried(1, 2, 3);
+    curried(3)(1,_)(2);
+
+    /*_.debounce(func, [wait=0], [options={}])防抖动函数。从上一次被调用后，延迟wait 毫秒后调用 func 方法。。 debounced（防抖动）函数提供一个 cancel 方法取消延迟的函数调用以及 flush 方法立即调用。 可以提供一个 options（选项） 对象决定如何调用 func方法，options.leading 与|或 options.trailing 决定延迟前后如何触发（注：是 先调用后等待 还是 先等待后调用）。func 调用时会传入最后一次提供给 debounced函数的参数。 后续调用的 debounced函数返回是最后一次 func 调用的结果。 */
+    /* 如果 leading 和 trailing 选项为 true, 则 func 允许 trailing 方式调用的条件为: 在 wait 期间多次调用防抖方法。 如果 wait 为 0 并且 leading 为 false, func调用将被推迟到下一个点，类似setTimeout为0的超时。 */
+    /*[options.leading=false] (boolean): 指定在延迟开始前调用。
+     [options.maxWait] (number): 设置 func 允许被延迟的最大值。
+     [options.trailing=true] (boolean): 指定在延迟结束后调用。*/
+    // 避免窗口在变动时出现昂贵的计算开销。
+    /*jQuery(window).on('resize', _.debounce(calculateLayout, 150));*/
+
+    // 当点击时 `sendMail` 随后就被调用。
+    /*jQuery(element).on('click', _.debounce(sendMail, 300, {
+        'leading': true,
+        'trailing': false
+    }));*/
+
+    // 确保 `batchLog` 调用1次之后，1秒内会被触发。
+   /* var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+    var source = new EventSource('/stream');
+    jQuery(source).on('message', debounced);*/
+
+    // 取消一个 trailing 的防抖动调用
+   /* jQuery(window).on('popstate', debounced.cancel);*/
+
+    /*_.defer(func, [args])推迟调用func，直到当前堆栈清理完毕。调用时，任何附加的参数会传给func*/
+    _.defer(function(text) {
+        console.log(text);
+    }, 'deferred');
+    /*一毫秒或者更久输出deffered*/
+
+    /*_.delay(func, wait, [args])延迟 wait 毫秒后调用 func。 调用时，任何附加的参数会传给func。 */
+    _.delay(function(text) {
+        console.log(text);
+    }, 1000, 'later');
+    /*一秒后输出later*/
+
+    /*_.flip(func)创建一个函数，调用func时候接收翻转的参数。*/
+    var flipped = _.flip(function() {
+        var result= _.toArray(arguments);
+        console.log(result);
+    });
+    flipped('a', 'b', 'c', 'd');
+
+    /*_.memoize(func, [resolver]) */
+    /*创建一个会缓存 func 结果的函数。 如果提供了 resolver ，就用 resolver 的返回值作为 key 缓存函数的结果。 默认情况下用第一个参数作为缓存的 key。 func 在调用时 this 会绑定在缓存函数上。*/
+    /*注意: 缓存会暴露在缓存函数的 cache 上。 它是可以定制的，只要替换了 _.memoize.Cache 构造函数，或实现了 Map 的 delete, get, has, 和 set方法。*/
+    var object = { 'a': 1, 'b': 2 };
+    var other = { 'c': 3, 'd': 4 };
+    var values = _.memoize(_.values);
+    console.log(values(object));
+    console.log(values(other));
+
+    /*修改结果缓存*/
+    values.cache.set(object, ['a', 'b']);
+    console.log(values(object));
+
+    // 替换 `_.memoize.Cache`。
+    _.memoize.Cache = WeakMap;
+
+    /*_.negate(predicate)创建一个针对断言函数 func 结果取反的函数。 func 断言函数被调用的时候，this 绑定到创建的函数，并传入对应参数*/
+    function isEven(n) {
+        return n % 2 == 0;
+    }
+    console.log(_.filter([1, 2, 3, 4, 5, 6], _.negate(isEven)));
+
+    /*创建一个只能调用 func 一次的函数。 重复调用返回第一次调用的结果。 func 调用时， this 绑定到创建的函数，并传入对应参数。*/
+    function add(){
+        var a=1;
+        var b=3;
+        console.log(a+b);
+    }
+    var initialize = _.once(add);
+    initialize();
+    initialize();
+
+    /*_.overArgs(func, [transforms=[_.identity]])创建一个函数，调用func时参数为相对应的transforms的返回值。*/
+    function doubled(n) {
+        return n * 2;
+    }
+
+    function square(n) {
+        return n * n;
+    }
+    var func = _.overArgs(function(x, y) {
+        console.log([x, y]);
+    }, [square, doubled]);
+    func(1,3);
+
+    /*_.partial(func, [partials]) 类似于bind，不会绑定到this*/
+    var greet = function(greeting, name) {
+        console.log(greeting + ' ' + name);
+    };
+    var sayHelloTo = _.partial(greet, 'hello','fred');
+    sayHelloTo();
+
+    var greetFred = _.partial(greet, _, 'fred');
+    greetFred('hi');
+
+    /*_.partialRight(func, [partials]) 预设参数被附加到接受参数的后面*/
+    var greet = function(greeting, name) {
+        console.log(greeting + ' ' + name);
+    };
+    var sayHelloTo = _.partialRight(greet, 'hello');
+    sayHelloTo('free');
+
+    var greetFred = _.partialRight(greet, _, 'fred');
+    greetFred('hi');
+
+    /*_.rearg(func, indexes)*/
+    /*创建一个函数,调用func时，根据指定的 indexes调整对应位置参数。其中第一个索引值是对应第一个参数，第二个索引值是作为第二个参数，依此类推。*/
+    var rearged = _.rearg(function(a, b, c) {
+       console.log([a, b, c]);
+    }, [2, 0, 1]);
+    rearged('b', 'c', 'a');
+
+    /*_.rest(func, [start=func.length-1])创建一个函数，调用func时，this绑定到创建的新函数，并且start之后的参数作为数组传入。 */
+    var say = _.rest(function(what, names) {
+        console.log( what + ' ' + _.initial(names).join(', ') +', & ' + _.last(names));
+    });
+    say('hello', 'fred', 'barney', 'pebbles');
+
+    /*_.spread(func, [start=0])创建一个函数，调用func时，this绑定到创建的新函数，把参数作为数组传入 */
+    var say = _.spread(function(who, what) {
+        console.log( who + ' says ' + what);
+    });
+
+    say(['fred', 'hello'])
+
+    /*_.throttle(func, [wait=0], [options={}])*/
+    /*创建一个节流函数，在 wait 秒内最多执行 func 一次的函数。 该函数提供一个 cancel 方法取消延迟的函数调用以及 flush方法立即调用可以提供一个 options 对象决定如何调用 func 方法， options.leading 与|或 options.trailing 决定 wait 前后如何触发。func会传入最后一次传入的参数给这个函数。 随后调用的函数返回是最后一次 func 调用的结果。 */
+    /*如果 leading 和 trailing 都设定为 true 则 func 允许 trailing 方式调用的条件为: 在 wait 期间多次调用。
+     如果 wait 为 0 并且 leading 为 false, func调用将被推迟到下一个点，类似setTimeout为0的超时.*/
+    // 避免在滚动时过分的更新定位
+   /* jQuery(window).on('scroll', _.throttle(updatePosition, 100));*/
+
+    // 点击后就调用 `renewToken`，但5分钟内超过1次。
+    /*var throttled = _.throttle(renewToken, 300000, { 'trailing': false });
+    jQuery(element).on('click', throttled);*/
+
+    // 取消一个 trailing 的节流调用。
+  /*  jQuery(window).on('popstate', throttled.cancel);*/
+
+    /*_.unary(func) 创建一个最多接受一个参数的函数，忽略多余的参数。 */
+    console.log(_.map(['6', '8', '10'], _.unary(parseInt)));
+
+    /*_.wrap(value, [wrapper=identity]) 创建一个函数。提供的 value 包装在 wrapper 函数的第一个参数里。 任何附加的参数都提供给 wrapper 函数。 被调用时 this 绑定在创建的函数上。*/
+    var p = _.wrap(_.escape, function(func, text) {
+        console.log('<p>' + func(text) + '</p>');
+    });
+    p('fred, barney, & pebbles');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
