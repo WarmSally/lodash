@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.add(augend, addend) 相加两个数*/
+    _.add(6, 4);// => 10
+
+    /*_.ceil(number, [precision=0])根据 precision 向上舍入 number。*/
+    _.ceil(4.006);// => 5
+    _.ceil(6.004, 2);// => 6.01
+    _.ceil(6040, -2);// => 6100
+
+    /*_.floor(number, [precision=0])根据 precision 向下保留 number。*/
+    _.floor(4.006);// => 4
+    _.floor(0.046, 2);// => 0.04
+    _.floor(4060, -2);// => 4000
+
+    /*_.max(array)计算array中最大的值.如果 array 是 空的或者假值将会返回 undefined。*/
+    _.max([4, 2, 8, 6]);// => 8
+    _.max([]);// => undefined
+
+    /*_.maxBy(array, [iteratee=_.identity])这个方法类似 _.max 除了它接受 iteratee 调用每一个元素，根据返回的 value 决定排序准则。 iteratee 会传入1个参数：(value)。*/
+    var objects = [{ 'n': 1 }, { 'n': 2 }];
+    _.maxBy(objects, function(o) { return o.n; });// => { 'n': 2 }
+    // 使用了 `_.property` iteratee 的回调结果
+    _.maxBy(objects, 'n');// => { 'n': 2 }
+
+   /* _.mean(array) 计算 array 的平均值。*/
+    _.mean([4, 2, 8, 6]);// => 5
+
+    /*_.min(array)计算 array 中最小的值。 如果 array 是 空的或者假值将会返回 undefined。*/
+
+    /*_.minBy(array, [iteratee=_.identity])*/
+    var objects = [{ 'n': 1 }, { 'n': 2 }];
+    _.minBy(objects, function(o) { return o.n; });// => { 'n': 1 }
+    // 使用了 `_.property` iteratee 的回调结果
+    _.minBy(objects, 'n');// => { 'n': 1 }
+
+    /*_.round(number, [precision=0]) 根据 precision 四舍五入 number。*/
+
+    /*_.subtract(minuend, subtrahend) 两数相减*/
+
+    /*_.sum(array) 计算 array 中值的总和*/
+
+    /*_.sumBy(array, [iteratee=_.identity]) */
+    var objects = [{ 'n': 4 }, { 'n': 2 }, { 'n': 8 }, { 'n': 6 }];
+    _.sumBy(objects, function(o) { return o.n; });// => 20
+    // 使用了 `_.property` 的回调结果
+    _.sumBy(objects, 'n');// => 20
+
+    /*_.clamp(number, [min], max) 返回限制在 min 和 max 之间的值*/
+
+    /*.inRange(number, [start=0], end)
+     检查 n 是否在 start 与 end 之间，但不包括 end。 如果 end 没有指定，那么 start 设置为0。 如果 start 大于 end，那么参数会交换以便支持负范围。*/
+    _.inRange(3, 2, 4);// => true
+    _.inRange(4, 8);// => true
+    _.inRange(4, 2);// => false
+    _.inRange(2, 2);// => false
+    _.inRange(1.2, 2);// => true
+    _.inRange(5.2, 4);// => false
+    _.inRange(-3, -2, -6);// => true
+
+    /*_.random([min=0], [max=1], [floating])产生一个包括 min 与 max 之间的数。如果只提供一个参数返回一个0到提供数之间的数。 如果 floating 设为 true，或者 min 或 max 是浮点数，结果返回浮点数。 */
+    _.random(0, 5);// =>  0 和 5 之间的数
+    _.random(5);// => 同样是 0 和 5 之间的数
+    _.random(5, true);// => 0 和 5 之间的浮点数
+    _.random(1.2, 5.2);// =>  1.2 和 5.2 之间的浮点数
+
+</script>

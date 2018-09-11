@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.castArray(value) 将value强制转换为数组*/
+    console.log(_.castArray(1));
+    _.castArray({ 'a': 1 });// => [{ 'a': 1 }]
+    _.castArray('abc');// => ['abc']
+    _.castArray(null);// => [null]
+    _.castArray(undefined);// => [undefined]
+    _.castArray();// => []
+    var array = [1, 2, 3];
+    console.log(_.castArray(array) === array);// => true
+
+    /*_.clone(value) 创建一个 value 的浅拷贝。 */
+    var objects = [{ 'a': 1 }, { 'b': 2 }];
+    var shallow = _.clone(objects);
+    console.log(shallow);
+    console.log(shallow[0] === objects[0]); // => true
+
+    /*_.cloneDeep(value) 会递归拷贝 value*/
+    var objects = [{ 'a': 1 }, { 'b': 2 }];
+    var deep = _.cloneDeep(objects);
+    console.log(deep);
+    console.log(deep[0] === objects[0]);// => false
+
+    /*浅拷贝&深拷贝*/
+    /*浅拷贝：只是增加了一个指针指向已经存在的内存*/
+    /*深拷贝：增加一个指针并且申请一个新的内存*/
+
+    /*_.cloneDeepWith(value, [customizer])*/
+    function customizer(value) {
+        if (_.isElement(value)) {
+            return value.cloneNode(true);
+        }
+    }
+    var el = _.cloneDeep(document.body, customizer);
+    /*console.log(el === document.body);// => false
+    console.log(el.nodeName);// => BODY
+    console.log(el.childNodes.length);// => 20*/
+
+    /*_.cloneWith(value, [customizer])*/
+    function customizer(value) {
+        if (_.isElement(value)) {
+            return value.cloneNode(false);
+        }
+    }
+    var el = _.cloneWith(document.body, customizer);
+    /*console.log(el === document.body);// => false
+    console.log(el.nodeName);// => 'BODY'
+    console.log(el.childNodes.length);// => 0*/
+
+    /*_.eq(value, other) 比较两者的值确定它们是否相等*/
+    var object = { 'user': 'fred' };
+    var other = { 'user': 'fred' };
+    console.log(_.eq(object, object));// => true
+    _.eq(object, other);// => false 对象是通过指针指向的内存中的地址进行比较的
+    _.eq('a', 'a');// => true
+    _.eq('a', Object('a'));// => false
+    _.eq(NaN, NaN);// => true
+
+    /*_.gt(value, other) 检查 value 是否大于 other*/
+    console.log(_.gt(3, 1));// => true
+    _.gt(3, 3);// => false
+    _.gt(1, 3);// => false
+
+    /*_.gte(value, other) 检查 value 是否大于等于 other*/
+    console.log(_.gte(3, 1));// => true
+    _.gte(3, 3);// => true
+    _.gte(1, 3);// => false
+
+    /*_.isArguments(value) 检查 value 是否是 类 arguments 对象。*/
+    console.log(_.isArguments(function() { return arguments; }()));// => true
+    _.isArguments([1, 2, 3]);// => false
+
+    /*_.isArray(value) 检查 value 是否是 Array 类对象。*/
+    _.isArray([1, 2, 3]);// => true
+    _.isArray(document.body.children);// => false
+    _.isArray('abc');// => false
+    _.isArray(_.noop);// => false
+    console.log(_.isArray({0:42,1:52,2:63,length:3}));// => false
+
+    /*_.isArrayBuffer(value) 检查 value 是否是 ArrayBuffer 对象。*/
+    /*ArrayBuffer 对象用来表示通用的、固定长度的原始二进制数据缓冲区。*/
+    _.isArrayBuffer(new ArrayBuffer(2));// => true
+    _.isArrayBuffer(new Array(2));// => false
+
+    /*_.isArrayLike(value) 检查 value 是否是类数组*/
+    /*类数组：{0:42,1:52,2:63,length:3}*/
+    console.log(_.isArrayLike([1, 2, 3]));// => true
+    _.isArrayLike(document.body.children);// => true
+    _.isArrayLike('abc');// => true
+    _.isArrayLike(_.noop);// => false
+    console.log(_.isArrayLike({0:42,1:52,2:63,length:3}));// => true
+
+
+    /*_.isArrayLikeObject(value) 检查 value 是否是类数组,检查值是否是个对象*/
+    _.isArrayLikeObject([1, 2, 3]);// => true
+    _.isArrayLikeObject(document.body.children);// => true
+    _.isArrayLikeObject('abc');// => false
+    _.isArrayLikeObject(_.noop);// => false
+    console.log(_.isArrayLikeObject({0:42,1:52,2:63,length:3}));// => true
+
+    /*_.isBoolean(value) 检查 value 是否是原始 boolean 类型或者对象。*/
+    _.isBoolean(false);// => true
+    _.isBoolean(null);// => false
+
+    /*_.isBuffer(value) 检查 value 是否是个 buffer*/
+    /*Buffer对象就是为了处理二进制数据而设计的。它是一个构造函数，生成的实例代表了V8引擎分配的一段内存，是一个类似数组的对象，成员都为0到255的整数值，即一个8位的字节。*/
+   /* _.isBuffer(new Buffer(2));*/// => true
+   /* _.isBuffer(new Uint8Array(2));*/// => false
+
+    /*_.isDate(value) 检查 value 是否是 Date 类型*/
+    _.isDate(new Date);// => true
+    _.isDate('Mon April 23 2012');// => false
+
+    /*_.isElement(value) 检查 value 是否是可能是 DOM 元素*/
+    _.isElement(document.body);// => true
+    _.isElement('<body>');// => false
+
+    /*_.isEmpty(value) 检查 value 是否为空。*/
+    _.isEmpty(null);// => true
+    _.isEmpty(true);// => true
+    _.isEmpty(1);// => true
+    _.isEmpty([1, 2, 3]);// => false
+    _.isEmpty({ 'a': 1 });// => false
+
+    /*_.isEqual(value, other) 执行深比较来决定两者的值是否相等。*/
+    var object = { 'user': 'fred' };
+    var other = { 'user': 'fred' };
+    _.isEqual(object, other);// => true
+    object === other;// => false
+
+    /*_.isEqualWith(value, other, [customizer])*/
+    function isGreeting(value) {
+        return /^h(?:i|ello)$/.test(value);
+    }
+    function customizer(objValue, othValue) {
+        if (isGreeting(objValue) && isGreeting(othValue)) {
+            return true;
+        }
+    }
+    var array = ['hello', 'goodbye'];
+    var other = ['hi', 'goodbye'];
+    console.log(_.isEqualWith(array, other, customizer));// => true
+
+    /*_.isError(value)检查 value 是否是 Error, EvalError, RangeError, ReferenceError, SyntaxError, TypeError, 或 URIError object. */
+    _.isError(new Error);// => true
+    _.isError(Error);// => false
+
+    /*_.isFinite(value) 检查 value 是否是原始有限数.*/
+    _.isFinite(3);// => true
+    console.log(Number.MAX_VALUE);
+    _.isFinite(Number.MAX_VALUE);// => true
+    _.isFinite(3.14);// => true
+    _.isFinite(Infinity);// => false
+
+    /*_.isFunction(value） 检查value 是否是Function 对象*/
+    _.isFunction(_);// => true
+    _.isFunction(/abc/);// => false
+
+    /*_.isInteger(value) 检查 value 是否是整数*/
+    _.isInteger(3);// => true
+    console.log(Number.MIN_VALUE);
+    _.isInteger(Number.MIN_VALUE);// => false
+    _.isInteger(Infinity);// => false
+    _.isInteger('3');// => false
+
+    /*_.isLength(value)检查 value是否是有效长度 */
+    _.isLength(3);// => true
+    _.isLength(Number.MIN_VALUE);// => false
+    _.isLength(Infinity);// => false
+    _.isLength('3');// => false
+
+    /*_.isMap(value) 检查 value 是否是个 Map 对象*/
+    _.isMap(new Map);// => true
+    _.isMap(new WeakMap);// => false
+
+    /*_.isMatch(object, source)执行一个深比较来确定object 是否包含有 source 的属性值。这个方法支持比较相同的值和 _.isEqual 一样*/
+    var object = { 'user': 'fred', 'age': 40 };
+    _.isMatch(object, { 'age': 40 });// => true
+    _.isMatch(object, { 'age': 36 });// => false
+
+    /*_.isMatchWith(object, source, [customizer])*/
+    function isGreeting(value) {
+        return /^h(?:i|ello)$/.test(value);
+    }
+    function customizer(objValue, srcValue) {
+        if (isGreeting(objValue) && isGreeting(srcValue)) {
+            return true;
+        }
+    }
+    var object = {'greeting':'hello'};
+    var source =  {'greet':'hi'} ;
+    console.log(_.isMatchWith(object, source, customizer));// => true
+
+    /*_.isNaN(value) 检查 value 是否是 NaN. 这个方法不同于 isNaN 对 undefind 和 其他非数值返回 true*/
+    _.isNaN(NaN);// => true
+    _.isNaN(new Number(NaN));// => true
+    isNaN(undefined);// => true
+    _.isNaN(undefined);// => false
+
+    /*_.isNative(value)检查 value是否是原生函数*/
+    _.isNative(Array.prototype.push);// => true
+    _.isNative(_);// => false
+    console.log( _.isNative(Array.prototype.concat))
+
+    /*_.isNil(value)检查 value 是否是 null 或者 undefined*/
+    _.isNil(null);// => true
+    _.isNil(void 0);// => true
+    _.isNil(NaN);// => false
+
+    /*_.isNull(value)检查 value 是否是 null*/
+    _.isNull(null);// => true
+    _.isNull(void 0);// => false
+
+    /*_.isNumber(value)检查 value 是否是原始数值型 或者 对象。*/
+    /* 要排除 Infinity, -Infinity, 以及 NaN 数值类型，用 _.isFinite 方法*/
+    _.isNumber(3);// => true
+    _.isNumber(Number.MIN_VALUE);// => true
+    _.isNumber(Infinity);// => true
+    _.isNumber('3');// => false
+
+    /*_.isObject(value)检查 value 是否是 Object 的 language type。 (例如： arrays, functions, objects, regexes, new Number(0), 以及 new String(''))*/
+    _.isObject({});// => true
+    _.isObject([1, 2, 3]);// => true
+    _.isObject(_.noop);// => true
+    _.isObject(null);// => false
+
+    /*检查 value 是否是 类对象。 类对象应该不是 null 以及 typeof 的结果是 "object"。*/
+    _.isObjectLike({});// => true
+    _.isObjectLike([1, 2, 3]);// => true
+    _.isObjectLike(_.noop);// => false
+    _.isObjectLike(null);// => false
+
+    /*_.isPlainObject(value)检查 value 是否是普通对象。 也就是说该对象由 Object 构造函数创建或者 [[Prototype]] 为空。*/
+    function Foo() {
+        this.a = 1;
+    }
+    _.isPlainObject(new Foo);// => false
+    _.isPlainObject([1, 2, 3]);// => false
+    _.isPlainObject({ 'x': 0, 'y': 0 });// => true
+    _.isPlainObject(Object.create(null));// => true
+
+    /*_.isRegExp(value)检查value是否是RegExp对象*/
+    _.isRegExp(/abc/);// => true
+    _.isRegExp('/abc/');// => false
+
+    /*_.isSafeInteger(value)检查 value 是否是安全整数。 这个整数应该是符合 IEEE-754 标准的非双精度浮点数。*/
+    _.isSafeInteger(3);// => true
+    _.isSafeInteger(Number.MIN_VALUE);// => false
+    _.isSafeInteger(Infinity);// => false
+    _.isSafeInteger('3');// => false
+
+    /*_.isSet(value)检查 value 是否是 Set 对象。*/
+    _.isSet(new Set);// => true
+    _.isSet(new WeakSet);// => false
+
+    /*_.isString(value) 检查 value 是否是原始字符串或者对象。*/
+    _.isString('abc');// => true
+    _.isString(1);// => false
+
+    /*_.isSymbol(value) 检查 value 是否是原始Symbol或者对象。*/
+    _.isSymbol(Symbol.iterator);// => true
+    _.isSymbol('abc');// => false
+
+    /*_.isTypedArray(value)检查value是否是TypedArray。*/
+    _.isTypedArray(new Uint8Array);// => true
+    _.isTypedArray([]);// => false
+
+    /*_.isUndefined(value)检查 value 是否是 undefined.*/
+    _.isUndefined(void 0);// => true
+    _.isUndefined(null);// => false
+
+    /*_.isWeakMap(value)检查 value 是否是WeakMap对象*/
+    _.isWeakMap(new WeakMap);// => true
+    _.isWeakMap(new Map);// => false
+
+    /*_.isWeakSet(value)检查 value 是否是 WeakSet 对象*/
+    _.isWeakSet(new WeakSet);// => true
+    _.isWeakSet(new Set);// => false
+
+    /*_.lt(value, other)检查 value 是否是 小于 other。*/
+    _.lt(1, 3);// => true
+    _.lt(3, 3);// => false
+    _.lt(3, 1);// => false
+
+    /*_.lte(value, other)检查 value 是否是 小于等于 other.*/
+    _.lte(1, 3);// => true
+    _.lte(3, 3);// => true
+    _.lte(3, 1);// => false
+
+    /*_.toArray(value)转换 value 为数组*/
+    _.toArray({ 'a': 1, 'b': 2 });// => [1, 2]
+    _.toArray('abc');// => ['a', 'b', 'c']
+    _.toArray(1);// => []
+    _.toArray(null);// => []
+
+    /*_.toInteger(value)转换 value 为整数*/
+    _.toInteger(3);// => 3
+    _.toInteger(Number.MIN_VALUE);// => 0
+    _.toInteger(Infinity);// => 1.7976931348623157e+308
+    _.toInteger('3');// => 3
+
+    /*_.toLength(value)转换 value 为用作类数组对象的长度整数。*/
+    _.toLength(3);// => 3
+    _.toLength(Number.MIN_VALUE);// => 0
+    _.toLength(Infinity);// => 4294967295
+    _.toLength('3');// => 3
+
+    /*_.toNumber(value)转换 value 为数值*/
+    _.toNumber(3);// => 3
+    _.toNumber(Number.MIN_VALUE);// => 5e-324
+    _.toNumber(Infinity);// => Infinity
+    _.toNumber('3');// => 3
+
+    /*_.toPlainObject(value)转换 value 为普通对象。 包括继承的可枚举属性。*/
+    function Foo() {this.b = 2;}
+    Foo.prototype.c = 3;
+    _.assign({ 'a': 1 }, new Foo);// => { 'a': 1, 'b': 2 }
+    _.assign({ 'a': 1 }, _.toPlainObject(new Foo));// => { 'a': 1, 'b': 2, 'c': 3 }
+
+    /*_.toSafeInteger(value)转换 value 为安全整数。 安全整数可以用于比较和准确的表示。*/
+    _.toSafeInteger(3);// => 3
+    _.toSafeInteger(Number.MIN_VALUE);// => 0
+    _.toSafeInteger(Infinity);// => 9007199254740991
+    _.toSafeInteger('3');// => 3
+
+    /*_.toString(value)如果 value 不是字符串，将其转换为字符串。 null 和 undefined 将返回空字符串。*/
+    _.toString(null);// => ''
+    _.toString(-0);// => '-0'
+    _.toString([1, 2, 3]);// => '1,2,3'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
