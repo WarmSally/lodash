@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.chain(value)创建一个lodash包装实例，包装value以启用显式链模式。要解除链必须使用 _#value 方法。*/
+    var users = [
+        { 'user': 'barney',  'age': 36 },
+        { 'user': 'fred',    'age': 40 },
+        { 'user': 'pebbles', 'age': 1 }
+    ];
+
+    var youngest = _
+            .chain(users)
+            .sortBy('age')
+            .map(function(o) {
+                return o.user + ' is ' + o.age;
+            })
+            .head()
+            .value();
+    console.log(youngest);
+    // => 'pebbles is 1'
+
+    /*_.tap(value, interceptor)这个方法调用一个 interceptor 并返回 value。interceptor调用1个参数： (value)。 该方法的目的是 进入 方法链序列以便修改中间结果。*/
+    _([1, 2, 3])
+            .tap(function(array) {
+            // 改变传入的数组
+                console.log(array.pop());
+            })
+            .reverse()
+            .value();
+            // => [2, 1]
+
+    /*_.thru(value, interceptor)这个方法类似_.tap， 除了它返回 interceptor 的返回结果。该方法的目的是"传递" 值到一个方法链序列以取代中间结果。*/
+    _('  abc  ')
+            .chain()
+            .trim()
+            .thru(function(value) {
+                return [value];
+            })
+            .value();
+    // => ['abc']
+
+    /*_.prototypeSymbol.iterator 启用包装对象为 iterable。*/
+    var wrapped = _([1, 2]);
+    console.log(wrapped[Symbol.iterator]() === wrapped);// => true
+    console.log(Array.from(wrapped));// => [1, 2]
+
+    /*_.prototype.at([paths])这个方法是 _.at 的包装版本 。*/
+    var object = { 'a': [{ 'b': { 'c': 3 } }, 4] };
+    _(object).at(['a[0].b.c', 'a[1]']).value();// => [3, 4]
+
+    /*_.prototype.chain()创建一个lodash包装实例，启用显式链模式。*/
+    var users = [
+        { 'user': 'barney', 'age': 36 },
+        { 'user': 'fred',   'age': 40 }
+    ];
+    // 不启用显式链
+    _(users).head();
+    // => { 'user': 'barney', 'age': 36 }
+
+    // 启用显式链
+    _(users)
+            .chain()
+            .head()
+            .pick('user')
+            .value();
+    // => { 'user': 'barney' }
+
+    /*_.prototype.commit()执行链式队列并返回结果。*/
+    var array = [1, 2];
+    var wrapped = _(array).push(3);
+    console.log(array);// => [1, 2]
+    wrapped = wrapped.commit();
+    console.log(array);// => [1, 2, 3]
+    wrapped.last();// => 3
+    console.log(array);// => [1, 2, 3]
+
+    /*_.prototype.next() 获得包装对象的下一个值，遵循 iterator protocol。*/
+    var wrapped = _([1, 2]);
+    console.log(wrapped.next());// => { 'done': false, 'value': 1 }
+    console.log(wrapped.next());// => { 'done': false, 'value': 2 }
+    console.log(wrapped.next());// => { 'done': true, 'value': undefined }
+
+    /*_.prototype.plant(value) 创建一个链式队列的拷贝，传入的 value 作为链式队列的值。*/
+    function square(n) {
+        return n * n;
+    }
+    var wrapped = _([1, 2]).map(square);
+    var other = wrapped.plant([3, 4]);
+    other.value();// => [9, 16]
+    wrapped.value();// => [1, 4]
+
+    /*_.prototype.reverse() 会改变包装数组*/
+    var array = [1, 2, 3];
+    _(array).reverse().value()// => [3, 2, 1]
+    console.log(array);// => [3, 2, 1]
+
+    /*_.prototype.value() 执行链式队列并提取解链后的值。*/
+    console.log(_([1, 2, 3]).value());// => [1, 2, 3]
+
+
+
+
+
+
+
+</script>

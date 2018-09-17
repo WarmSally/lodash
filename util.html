@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.js"></script>
+<script>
+    /*_.attempt(func, [args]) 尝试调用func，返回结果 或者 捕捉错误对象。任何附加的参数都会在调用时传给func。*/
+    var elements = _.attempt(function(selector) {
+        return document.querySelectorAll(selector);
+    }, '>_>');
+
+    if (_.isError(elements)) {
+        elements = [];
+    }
+
+    /*_.bindAll(object, methodNames)绑定一个对象的方法到对象本身，覆盖现有的方法。这个方法不会设置绑定函数的 "length" 属性。*/
+    var view = {
+        'label': 'docs',
+        'click': function() {
+            console.log('clicked ' + this.label);
+        }
+    };
+
+    _.bindAll(view, ['click']);
+    /*jQuery(element).on('click', view.click);*/
+    // => Logs 'clicked docs' when clicked.
+
+    /*_.cond(pairs)创建了一个函数，这个函数会迭代pairs，并调用最先返回真值对应的函数。该断言函数对绑定 this 及传入创建函数的参数。*/
+    var func = _.cond([
+        [_.matches({ 'a': 1 }),           _.constant('matches A')],
+        [_.conforms({ 'b': _.isNumber }), _.constant('matches B')],
+        [_.stubTrue,                      _.constant('no match')]
+    ]);
+    console.log(func({ 'a': 1, 'b': 2 }));// => 'matches A'
+    console.log(func({ 'a': 0, 'b': 1 }));// => 'matches B'
+    console.log(func({ 'a': '1', 'b': '2' }));// => 'no match'
+
+    /*_.conforms(source)创建一个函数。 这个函数会 调用 source 的属性名对应的 predicate 与传入对象相对应属性名的值进行断言处理。 如果都符合返回 true ，否则返回 false 。 */
+    var objects = [
+        { 'a': 2, 'b': 1 },
+        { 'a': 1, 'b': 2 }
+    ];
+    console.log(_.filter(objects, _.conforms({ 'b': function(n) { return n > 1; } })));
+    // => [{ 'a': 1, 'b': 2 };
+
+    /*_.constant(value)创建一个返回 value 的函数。*/
+    var objects = _.times(2, _.constant({ 'a': 1 }));
+    console.log(objects);// => [{ 'a': 1 }, { 'a': 1 }]
+    console.log(objects[0] === objects[1]);// => true
+
+    /*_.defaultTo(value, defaultValue)检查value，以确定一个默认值是否应被返回。如果value为NaN, null, 或者 undefined，那么返回defaultValue默认值。*/
+    console.log(_.defaultTo(1, 10));// => 1
+    console.log(_.defaultTo(undefined, 10));// => 10
+
+    /*_.flow([funcs]) 创建一个函数。 返回的结果是调用提供函数的结果，this 会绑定到创建函数。 每一个连续调用，传入的参数都是前一个函数返回的结果。*/
+    function square(n) {
+        return n * n;
+    }
+    var addSquare = _.flow([_.add, square]);
+    console.log(addSquare(1));
+    console.log(addSquare(2));
+    addSquare(1, 2);// => 9
+
+    /*_.flowRight([funcs])这个方法类似 _.flow，除了它调用函数的顺序是从右往左的。*/
+    function square(n) {
+        return n * n;
+    }
+    var addSquare = _.flowRight([ square,_.add]);
+    console.log(addSquare(1, 2));// => 9
+
+    /*_.identity(value)这个方法返回首个提供的参数。*/
+    var object = { 'a': 1 };
+    console.log(_.identity(object) === object);// => true
+
+    /*_.iteratee([func=_.identity])创建一个函数，通过创建函数的参数调用 func 函数。 如果 func 是一个属性名，传入包含这个属性名的对象，回调返回对应属性名的值。 如果 func 是一个对象，传入的元素有相同的对象属性，回调返回 true 。 其他情况返回 false 。*/
+    var users = [
+        { 'user': 'barney', 'age': 36, 'active': true },
+        { 'user': 'fred',   'age': 40, 'active': false }
+    ];
+
+    // The `_.matches` iteratee shorthand.
+    console.log(_.filter(users, _.iteratee({ 'user': 'barney', 'active': true })));
+    // => [{ 'user': 'barney', 'age': 36, 'active': true }]
+
+    // The `_.matchesProperty` iteratee shorthand.
+    console.log(_.filter(users, _.iteratee(['user', 'fred'])));
+    // => [{ 'user': 'fred', 'age': 40 }]
+
+    // The `_.property` iteratee shorthand.
+    console.log(_.map(users, _.iteratee('user')));
+    // => ['barney', 'fred']
+
+    // Create custom iteratee shorthands.
+    _.iteratee = _.wrap(_.iteratee, function(iteratee, func) {
+        return !_.isRegExp(func) ? iteratee(func) : function(string) {
+            return func.test(string);
+        };
+    });
+    _.filter(['abc', 'def'], /ef/);// => ['def']
+
+    /*_.matches(source)创建一个深比较的方法来比较给定的对象和 source 对象。 如果给定的对象拥有相同的属性值返回 true，否则返回 false。*/
+    var objects = [
+        { 'a': 1, 'b': 2, 'c': 3 },
+        { 'a': 4, 'b': 5, 'c': 6 }
+    ];
+    console.log(_.filter(objects, _.matches({ 'a': 4, 'c': 6 })));
+    // => [{ 'a': 4, 'b': 5, 'c': 6 }
+
+    /*_.matchesProperty(path, srcValue)创建一个深比较的方法来比较给定对象的 path 的值是否是 srcValue 。 如果是返回 true ，否则返回 false 。 */
+    var objects = [
+        { 'a': 1, 'b': 2, 'c': 3 },
+        { 'a': 4, 'b': 5, 'c': 6 }
+    ];
+    console.log(_.find(objects, _.matchesProperty('a', 4)));// => { 'a': 4, 'b': 5, 'c': 6 }
+
+    /*_.method(path, [args]) 创建一个调用给定对象 path 上的函数。 任何附加的参数都会传入这个调用函数中。*/
+    var objects = [
+        { 'a': { 'b': _.constant(2) } },
+        { 'a': { 'b': _.constant(1) } }
+    ];
+    console.log(_.map(objects, _.method('a.b')));// => [2, 1]
+    console.log(_.map(objects, _.method(['a', 'b'])));// => [2, 1]
+
+    /*_.methodOf(object, [args])这个创建一个函数调用给定 object 的 path 上的方法， 任何附加的参数都会传入这个调用函数中*/
+    var array = _.times(3, _.constant), object = { 'a': array, 'b': array, 'c': array };
+    console.log(_.map(['a[2]', 'c[0]'], _.methodOf(object)));// => [2, 0]
+    console.log(_.map([['a', '2'], ['c', '1']], _.methodOf(object)));// => [2, 0]
+
+    /*_.mixin([object=lodash], source, [options={}]) 添加来源对象自身的所有可枚举函数属性到目标对象。 如果 object 是个函数，那么函数方法将被添加到原型链上。*/
+    function vowels(string) {
+        return _.filter(string, function(v) {
+            return /[aeiou]/i.test(v);
+        });
+    }
+    console.log(_.mixin({ 'vowels': vowels }));
+    console.log(_.vowels('fred'));// => ['e']
+    console.log(_('fred').vowels().value());// => ['e']
+    _.mixin({ 'vowels': vowels }, { 'chain': false });
+    console.log(_('fred').vowels());// => ['e']
+
+    /*_.noConflict() 释放 _ 变量为原来的值，并返回一个 lodash 的引用。*/
+    /*var lodash = _.noConflict();*/
+
+    /*_.noop()这个方法返回 undefined。*/
+    console.log(_.times(2, _.noop));// => [undefined, undefined]
+
+    /*_.nthArg([n=0])创建一个函数，这个函数返回第 n 个参数。如果 n为负数，则返回从结尾开始的第n个参数。*/
+    var func = _.nthArg(1);
+    console.log(func('a', 'b', 'c', 'd'));// => 'b'
+    var func = _.nthArg(-2);
+    console.log(func('a', 'b', 'c', 'd'));// => 'c'
+
+    /*_.over([iteratees=[_.identity]])创建一个函数，传入提供的参数的函数并调用 iteratees 返回结果。*/
+    var func = _.over([Math.max, Math.min]);
+    console.log(func(1, 2, 3, 4));// => [4, 1]
+
+    /*_.overEvery([predicates=[_.identity]])建一个函数，传入提供的参数的函数并调用 predicates 判断是否 全部 都为真值。*/
+    var func = _.overEvery([Boolean, isFinite]);
+    console.log(func('1'));// => true
+    console.log(func(null));// => false
+    console.log(func(NaN));// => false
+
+    /*_.overSome([predicates=[_.identity]]) 创建一个函数，传入提供的参数的函数并调用 predicates 判断是否 存在 有真值。*/
+    var func = _.overSome([Boolean, isFinite]);
+    console.log(func('1'));// => true
+    console.log(Boolean('1'));
+    console.log(typeof '1');
+    console.log(func(null));// => true
+    console.log(Boolean('null'));
+    console.log(typeof null);
+    console.log(func(NaN));// => false
+
+    /*_.property(path)创建一个返回给定对象的 path 的值的函数。*/
+    var objects = [
+        { 'a': { 'b': 2 } },
+        { 'a': { 'b': 1 } }
+    ];
+    console.log(_.map(objects, _.property('a.b')));// => [2, 1]
+    console.log(_.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b'));// => [1, 2]
+
+    /*_.propertyOf(object)这个方法创建的函数返回给定 path 在object上的值。*/
+    var array = [0, 1, 2],
+            object = { 'a': array, 'b': array, 'c': array };
+
+   console.log(_.map(['a[2]', 'c[0]'], _.propertyOf(object)));// => [2, 0]
+   console.log(_.map([['a', '2'], ['c', '0']], _.propertyOf(object)));// => [2, 0]
+
+    /*_.range([start=0], end, [step=1]) 创建一个包含从 start 到 end，但不包含 end 本身范围数字的数组。 如果 start 是负数，而 end 或 step 没有指定，那么 step 从 -1 为开始。 如果 end 没有指定，start 设置为 0。 如果 end 小于 start ，会创建一个空数组，除非指定了 step。*/
+    _.range(4);// => [0, 1, 2, 3]
+    _.range(-4);// => [0, -1, -2, -3]
+    _.range(1, 5);// => [1, 2, 3, 4]
+    _.range(0, 20, 5);// => [0, 5, 10, 15]
+    _.range(0, -4, -1);// => [0, -1, -2, -3]
+    _.range(1, 4, 0);// => [1, 1, 1]
+    _.range(0);// => []
+
+    /*_.rangeRight([start=0], end, [step=1])降序生成值*/
+    _.rangeRight(4);// => [3, 2, 1, 0]
+    _.rangeRight(-4);// => [-3, -2, -1, 0]
+    _.rangeRight(1, 5);// => [4, 3, 2, 1]
+    _.rangeRight(0, 20, 5);// => [15, 10, 5, 0]
+    _.rangeRight(0, -4, -1);// => [-3, -2, -1, 0]
+    _.rangeRight(1, 4, 0);// => [1, 1, 1]
+    _.rangeRight(0);// => []
+
+    /*_.runInContext([context=root])创建一个给定context上下文对象的原始的 lodash 函数。*/
+    _.mixin({ 'foo': _.constant('foo') });
+    var lodash = _.runInContext();
+    lodash.mixin({ 'bar': lodash.constant('bar') });
+   console.log(_.isFunction(_.foo));// => true
+   console.log(_.isFunction(_.bar));// => false
+   console.log(lodash.isFunction(lodash.foo));// => false
+   console.log(lodash.isFunction(lodash.bar));// => true
+
+    /*_.stubArray()这个方法返回一个新的空数组。*/
+    var arrays = _.times(2, _.stubArray);
+    console.log(arrays);// => [[], []]
+    console.log(arrays[0] === arrays[1]);// => false
+
+    /*_.stubFalse()这个方法返回 false.*/
+    _.times(2, _.stubFalse);// => [false, false]
+
+    /*_.stubObject()这个方法返回一个空对象. */
+    var objects = _.times(2, _.stubObject);
+    console.log(objects);// => [{}, {}]
+    console.log(objects[0] === objects[1]);// => false
+
+    /*_.stubString()这个方法返回一个空字符串。*/
+    _.times(2, _.stubString);// => ['', '']
+
+    /*_.stubTrue()这个方法返回 true。*/
+    _.times(2, _.stubTrue);// => [true, true]
+
+    /*_.times(n, [iteratee=_.identity])调用 iteratee n 次，每次调用返回的结果存入到数组中。 iteratee 调用入1个参数： (index)。*/
+    console.log(_.times(3, String));// => ['0', '1', '2']
+    console.log(_.times(4, _.constant(0)));// => [0, 0, 0, 0]
+
+    /*_.toPath(value)转化 value 为属性路径的数组 。*/
+    _.toPath('a.b.c');// => ['a', 'b', 'c']
+    _.toPath('a[0].b.c');// => ['a', '0', 'b', 'c']
+
+    /*_.uniqueId([prefix=''])生成唯一ID。 如果提供了 prefix ，会被添加到ID前缀上。*/
+    _.uniqueId('contact_');// => 'contact_104'
+    _.uniqueId();// => '105'
+
+
+
+
+
+
+</script>
